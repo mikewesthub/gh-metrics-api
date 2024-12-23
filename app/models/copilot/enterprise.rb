@@ -85,7 +85,7 @@ module Copilot
         Parallel.map(organizations, in_threads: Parallel.processor_count) do |org|
           Copilot::Organization.new(org: org['login']).license_summary
         rescue Octokit::NotFound
-          # You must be an owner of each organization to access this data
+          # User must be an owner of each organization to access this data
           { error: "#{org['login']} not found" }
         end
     end
@@ -96,6 +96,7 @@ module Copilot
         variables: { slug: ent }
       )
 
+      # return Organizations nodes as an array of hashes
       response.data.enterprise.organizations.to_h['nodes']
     end
 
