@@ -6,6 +6,8 @@ require_relative 'metric_calculations'
 require_relative 'organization'
 require 'parallel'
 
+require 'pry'
+
 module Copilot
   # Access Copilot Enterprise metrics from the GitHub API
   class Enterprise
@@ -89,12 +91,23 @@ module Copilot
     end
 
     def organizations
+      response = GraphQLAPI::Client.query(
+        GraphQLQueries::EnterpriseOrganizationsQuery,
+        variables: { slug: ent }
+      )
+
+      response.data.enterprise.organizations.to_h['nodes']
+    end
+
+    def all_organizations
+      # Allows to return all organizations when an Enterprise has greater than 100 organizations
+      # This is more orgs than most should have, but it's possible
       after_cursor = nil
       organizations = []
 
       loop do
         response = GraphQLAPI::Client.query(
-          GraphQLQueries::EnterpriseOrganizationsQuery,
+          GraphQLQueries::EnterpriseAllOrganizationsQuery,
           variables: { slug: ent, after: after_cursor }
         )
 
@@ -109,3 +122,7 @@ module Copilot
     end
   end
 end
+
+ent = Copilot::Enterprise.new
+binding.pry
+puts ent
