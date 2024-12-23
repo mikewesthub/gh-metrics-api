@@ -122,7 +122,3 @@ module Copilot
     end
   end
 end
-
-ent = Copilot::Enterprise.new
-binding.pry
-puts ent
