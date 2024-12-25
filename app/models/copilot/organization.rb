@@ -13,7 +13,7 @@ module Copilot
     attr_reader :org, :team
 
     # defaults for testing only. org will be required and team will be optional
-    def initialize(org: 'octodemo', team: 'solution-engineers')
+    def initialize(org:, team: nil)
       @org = org
       @team = team
     end
@@ -35,13 +35,13 @@ module Copilot
 
     def team_acceptance_percentage
       calculate_percentage_for(
-        total_lines_accepted_for(team_usage).to_f / total_lines_suggested_for(team_usage)
+        total_acceptances_for(team_usage).to_f / total_suggestions_for(team_usage)
       )
     end
 
     def acceptance_percentage
       calculate_percentage_for(
-        total_lines_accepted_for(usage).to_f / total_lines_suggested_for(usage)
+        total_acceptances_for(usage).to_f / total_suggestions_for(usage)
       )
     end
 

@@ -17,10 +17,10 @@ class ApiController < ApplicationController
     copilot.daily_org_summary.to_json
   end
 
-  get '/copilot/organization/:org/team/:team_slug/daily_summary' do
+  get '/copilot/organization/:org/team/:team/daily_summary' do
     org = params['org']
-    team_slug = params['team_slug']
-    copilot = Copilot::Organization.new(org: org, team_slug: team_slug)
+    team = params['team_slug']
+    copilot = Copilot::Organization.new(org: org, team: team)
     copilot.daily_team_summary.to_json
   end
 
@@ -28,6 +28,19 @@ class ApiController < ApplicationController
     org = params['org']
     copilot = Copilot::Organization.new(org: org)
     copilot.license_breakdown.to_json
+  end
+
+  get '/copilot/organization/:org/acceptance_percentage' do
+    org = params['org']
+    copilot = Copilot::Organization.new(org: org)
+    copilot.acceptance_percentage.to_json
+  end
+
+  get '/copilot/organization/:org/team/:team/acceptance_percentage' do
+    org = params['org']
+    team = params['team']
+    copilot = Copilot::Organization.new(org: org, team: team)
+    copilot.team_acceptance_percentage.to_json
   end
 
   # Enterprise level Copilot metrics
@@ -42,6 +55,12 @@ class ApiController < ApplicationController
     ent = params['ent']
     enterprise = Copilot::Enterprise.new(ent: ent)
     enterprise.license_breakdown.to_json
+  end
+
+  get '/copilot/enterprise/:ent/acceptance_percentage' do
+    ent = params['ent']
+    enterprise = Copilot::Enterprise.new(ent: ent)
+    enterprise.acceptance_percentage.to_json
   end
 
   # Pull Request metrics
