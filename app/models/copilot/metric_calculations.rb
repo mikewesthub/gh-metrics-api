@@ -6,22 +6,40 @@ module MetricCalculations
     (num * 100).round(2)
   end
 
-  def total_lines_accepted_for(usage_summary)
+  def total_acceptances_for(usage_summary)
     acceptances = usage_summary.map do |day|
-      count = day.total_lines_accepted
+      count = day.total_acceptances_count
       count.nil? ? 0 : count
     end
 
     acceptances.sum
   end
 
-  def total_lines_suggested_for(usage_summary)
+  def total_suggestions_for(usage_summary)
     suggestions = usage_summary.map do |day|
-      count = day.total_lines_suggested
+      count = day.total_suggestions_count
       count.nil? ? 0 : count
     end
 
     suggestions.sum
+  end
+
+  def total_lines_accepted_for(usage_summary)
+    lines_accepted = usage_summary.map do |day|
+      count = day.total_lines_accepted
+      count.nil? ? 0 : count
+    end
+
+    lines_accepted.sum
+  end
+
+  def total_lines_suggested_for(usage_summary)
+    lines_suggested = usage_summary.map do |day|
+      count = day.total_lines_suggested
+      count.nil? ? 0 : count
+    end
+
+    lines_suggested.sum
   end
 
   def daily_summary_for(metrics)

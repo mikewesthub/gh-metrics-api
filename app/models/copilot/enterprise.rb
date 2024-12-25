@@ -17,7 +17,7 @@ module Copilot
 
     attr_reader :ent
 
-    def initialize(ent: 'octodemo')
+    def initialize(ent:)
       @ent = ent
     end
 
@@ -27,7 +27,7 @@ module Copilot
 
     def acceptance_percentage
       calculate_percentage_for(
-        total_lines_accepted_for(usage).to_f / total_lines_suggested_for(usage)
+        total_acceptances_for(usage).to_f / total_suggestions_for(usage)
       )
     end
 
@@ -81,6 +81,8 @@ module Copilot
     end
 
     def organization_summaries
+      # this may not be useful as #usage returns much of the same data for an enterprise
+      # the only unique information is added_this_cycle and copilot enablement settings
       @organization_summaries ||=
         Parallel.map(organizations, in_threads: Parallel.processor_count) do |org|
           Copilot::Organization.new(org: org['login']).license_summary
