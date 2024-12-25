@@ -35,23 +35,23 @@ module Copilot
       acceptance_by_language_for(usage)
     end
 
-    def usage
-      @usage ||= octokit.get("/enterprises/#{ent}/copilot/usage")
-    end
-
-    def metrics
-      @metrics ||= octokit.get("/enterprises/#{ent}/copilot/metrics")
-    end
-
-    def licenses_assigned
-      @licenses_assigned ||= octokit.get("/enterprises/#{ent}/copilot/billing/seats")
-    end
-
     def license_breakdown
+      # Will only return the license breakdown for the first 100 organizations
+      license_breakdown_for(organization_summaries)
+    end
+
+    def paginated_license_breakdown
+      license_breakdown_for(paginated_organization_summaries)
+    end
+
+    private
+
+    def license_breakdown_for(organization_summaries)
       license_summaries = successes_for(organization_summaries)
       errors = errors_for(organization_summaries)
 
       breakdown = {
+        total_seats: licenses_assigned.total_seats,
         added_this_cycle: 0,
         active_this_cycle: 0,
         inactive_this_cycle: 0
@@ -74,8 +74,6 @@ module Copilot
       )
     end
 
-    private
-
     def successes_for(summaries)
       summaries.reject { |summary| summary.key?(:error) }
     end
@@ -85,8 +83,14 @@ module Copilot
     end
 
     def organization_summaries
-      # this may not be useful as #usage returns much of the same data for an enterprise
-      # the only unique information is added_this_cycle and copilot enablement settings
+      organization_summaries_for(organizations)
+    end
+
+    def paginated_organization_summaries
+      organization_summaries_for(all_organizations)
+    end
+
+    def organization_summaries_for(organizations)
       @organization_summaries ||=
         Parallel.map(organizations, in_threads: Parallel.processor_count) do |org|
           Copilot::Organization.new(org: org['login']).license_summary
@@ -126,6 +130,20 @@ module Copilot
       end
 
       organizations.flatten
+    end
+
+    # Enterprise API
+
+    def usage
+      @usage ||= octokit.get("/enterprises/#{ent}/copilot/usage")
+    end
+
+    def metrics
+      @metrics ||= octokit.get("/enterprises/#{ent}/copilot/metrics")
+    end
+
+    def licenses_assigned
+      @licenses_assigned ||= octokit.get("/enterprises/#{ent}/copilot/billing/seats")
     end
   end
 end

@@ -6,8 +6,6 @@ require_relative '../models/copilot/organization'
 
 # Routing logic for API endpoints
 class ApiController < ApplicationController
-  protect_from_forgery with: :exception
-
   get '/' do
     puts 'This should lead to some sort of configuration'
   end
@@ -69,8 +67,14 @@ class ApiController < ApplicationController
 
   get '/copilot/enterprise/:ent/license_breakdown' do
     ent = params['ent']
+    orgs = params['orgs']
     enterprise = Copilot::Enterprise.new(ent: ent)
-    enterprise.license_breakdown.to_json
+
+    if orgs == 'all'
+      enterprise.paginated_license_breakdown.to_json
+    else
+      enterprise.license_breakdown.to_json
+    end
   end
 
   get '/copilot/enterprise/:ent/acceptance_percentage' do
