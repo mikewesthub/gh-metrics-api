@@ -2,7 +2,6 @@
 
 require_relative '../../services/octokit_client'
 require_relative 'metric_calculations'
-require 'pry'
 
 module Copilot
   # Access Copilot metrics from the GitHub API
@@ -12,7 +11,6 @@ module Copilot
 
     attr_reader :org, :team
 
-    # defaults for testing only. org will be required and team will be optional
     def initialize(org:, team: nil)
       @org = org
       @team = team
