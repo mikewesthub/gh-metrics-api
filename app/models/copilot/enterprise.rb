@@ -31,6 +31,10 @@ module Copilot
       )
     end
 
+    def acceptance_by_language
+      acceptance_by_language_for(usage)
+    end
+
     def usage
       @usage ||= octokit.get("/enterprises/#{ent}/copilot/usage")
     end

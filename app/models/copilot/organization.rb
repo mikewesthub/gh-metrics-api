@@ -53,6 +53,14 @@ module Copilot
       )
     end
 
+    def acceptance_by_language
+      acceptance_by_language_for(usage)
+    end
+
+    def team_acceptance_by_language
+      acceptance_by_language_for(team_usage)
+    end
+
     # Organization API
 
     def usage
