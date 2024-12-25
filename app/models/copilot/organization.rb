@@ -79,10 +79,6 @@ module Copilot
       @team_metrics ||= octokit.get("/orgs/#{org}/teams/#{team}/copilot/metrics", per_page: 100)
     end
 
-    def licenses_assigned
-      @licenses_assigned ||= octokit.get("/orgs/#{org}/copilot/billing/seats", per_page: 100)
-    end
-
     def license_summary
       @license_summary ||= octokit.get("/orgs/#{org}/copilot/billing", per_page: 100)
     end
