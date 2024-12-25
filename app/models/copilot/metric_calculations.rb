@@ -42,6 +42,36 @@ module MetricCalculations
     lines_suggested.sum
   end
 
+  def acceptance_by_language_for(usage_summary)
+    lang_summary = {}
+
+    usage_summary.each do |summary|
+      breakdown = summary.breakdown
+
+      breakdown.each do |b|
+        language = b.language
+
+        if !lang_summary.key?(language)
+          lang_summary[language] = {
+            suggestions_count: b.suggestions_count,
+            acceptances_count: b.acceptances_count,
+            active_users: b.active_users
+          }
+        else
+          stats = lang_summary[language]
+
+          stats.tap do |stat|
+            stat[:suggestions_count] += b.suggestions_count
+            stat[:acceptances_count] += b.acceptances_count
+            stat[:active_users] += b.active_users
+          end
+        end
+      end
+    end
+
+    lang_summary
+  end
+
   def daily_summary_for(metrics)
     metrics.map do |metric|
       {

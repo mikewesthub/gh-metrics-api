@@ -43,6 +43,19 @@ class ApiController < ApplicationController
     copilot.team_acceptance_percentage.to_json
   end
 
+  get '/copilot/organization/:org/acceptance_by_language' do
+    org = params['org']
+    copilot = Copilot::Organization.new(org: org)
+    copilot.acceptance_by_language.to_json
+  end
+
+  get '/copilot/organization/:org/team/:team/acceptance_by_language' do
+    org = params['org']
+    team = params['team']
+    copilot = Copilot::Organization.new(org: org, team: team)
+    copilot.team_acceptance_by_language.to_json
+  end
+
   # Enterprise level Copilot metrics
 
   get '/copilot/enterprise/:ent/daily_summary' do
@@ -61,6 +74,12 @@ class ApiController < ApplicationController
     ent = params['ent']
     enterprise = Copilot::Enterprise.new(ent: ent)
     enterprise.acceptance_percentage.to_json
+  end
+
+  get '/copilot/enterprise/:ent/acceptance_by_language' do
+    ent = params['ent']
+    enterprise = Copilot::Enterprise.new(ent: ent)
+    enterprise.acceptance_by_language.to_json
   end
 
   # Pull Request metrics
