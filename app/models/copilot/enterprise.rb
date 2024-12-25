@@ -6,8 +6,6 @@ require_relative 'metric_calculations'
 require_relative 'organization'
 require 'parallel'
 
-require 'pry'
-
 module Copilot
   # Access Copilot Enterprise metrics from the GitHub API
   class Enterprise
