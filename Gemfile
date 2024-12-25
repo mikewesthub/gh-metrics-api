@@ -18,6 +18,6 @@ gem 'rspec', '~> 3.0'
 
 gem 'rubocop', '~> 1.21'
 
-gem 'sinatra'
+gem 'sinatra', '~> 4.1.0'
 
 gem 'parallel'

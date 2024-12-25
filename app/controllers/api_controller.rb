@@ -4,7 +4,10 @@ require_relative 'application_controller'
 require_relative '../models/copilot/enterprise'
 require_relative '../models/copilot/organization'
 
+# Routing logic for API endpoints
 class ApiController < ApplicationController
+  protect_from_forgery with: :exception
+
   get '/' do
     puts 'This should lead to some sort of configuration'
   end
