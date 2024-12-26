@@ -6,6 +6,8 @@ require_relative 'metric_calculations'
 require_relative 'organization'
 require 'parallel'
 
+require 'pry'
+
 module Copilot
   # Access Copilot Enterprise metrics from the GitHub API
   class Enterprise
@@ -89,13 +91,12 @@ module Copilot
     end
 
     def organization_summaries_for(organizations)
-      @organization_summaries ||=
-        Parallel.map(organizations, in_threads: Parallel.processor_count) do |org|
-          Copilot::Organization.new(org: org['login']).license_summary
-        rescue Octokit::NotFound
-          # User must be an owner of each organization to access this data
-          { error: "#{org['login']} not found" }
-        end
+      Parallel.map(organizations, in_threads: Parallel.processor_count) do |org|
+        Copilot::Organization.new(org: org['login']).license_summary
+      rescue Octokit::NotFound
+        # User must be an owner of each organization to access this data
+        { error: "#{org['login']} not found" }
+      end
     end
 
     def organizations
