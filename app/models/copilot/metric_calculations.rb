@@ -69,7 +69,19 @@ module MetricCalculations
       end
     end
 
+    add_completion_percentage_for(lang_summary)
     lang_summary
+  end
+
+  def add_completion_percentage_for(summary)
+    summary.each do |i|
+      s = i[1]
+      percentage = calculate_percentage_for(
+        s[:acceptances_count].to_f / s[:suggestions_count]
+      )
+
+      s.merge!(percentage: percentage)
+    end
   end
 
   def daily_summary_for(metrics)
