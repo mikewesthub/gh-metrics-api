@@ -43,46 +43,28 @@ module MetricCalculations
   end
 
   def acceptance_by_language_for(usage_summary)
-    lang_summary = {}
+    usage_summary.each_with_object({}) do |summary, lang_summary|
+      summary.breakdown.each do |b|
+        lang_summary[b.language] ||= {
+          suggestions_count: 0,
+          acceptances_count: 0,
+          active_users: 0
+        }
 
-    usage_summary.each do |summary|
-      breakdown = summary.breakdown
+        stats = lang_summary[b.language]
+        stats[:suggestions_count] += b.suggestions_count
+        stats[:acceptances_count] += b.acceptances_count
+        stats[:active_users] += b.active_users
 
-      breakdown.each do |b|
-        language = b.language
-
-        if !lang_summary.key?(language)
-          lang_summary[language] = {
-            suggestions_count: b.suggestions_count,
-            acceptances_count: b.acceptances_count,
-            active_users: b.active_users
-          }
-        else
-          stats = lang_summary[language]
-
-          stats.tap do |stat|
-            stat[:suggestions_count] += b.suggestions_count
-            stat[:acceptances_count] += b.acceptances_count
-            stat[:active_users] += b.active_users
-          end
-        end
+        # Calculate percentage inline
+        stats[:percentage] = calculate_percentage_for(
+          stats[:acceptances_count].to_f / stats[:suggestions_count]
+        )
       end
     end
-
-    add_completion_percentage_for(lang_summary)
-    lang_summary
   end
 
-  def add_completion_percentage_for(summary)
-    summary.each do |i|
-      s = i[1]
-      percentage = calculate_percentage_for(
-        s[:acceptances_count].to_f / s[:suggestions_count]
-      )
-
-      s.merge!(percentage: percentage)
-    end
-  end
+  # Remove separate add_completion_percentage_for method since it's now inline
 
   def daily_summary_for(metrics)
     metrics.map do |metric|
