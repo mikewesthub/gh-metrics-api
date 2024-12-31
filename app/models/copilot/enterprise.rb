@@ -95,6 +95,8 @@ module Copilot
         Copilot::Organization.new(org: org['login']).license_summary
       rescue Octokit::NotFound
         # User must be an owner of each organization to access this data
+        # TODO: This error handling should be presented to the user 
+        # - more descriptive error should be logged
         { error: "#{org['login']} not found" }
       end
     end
